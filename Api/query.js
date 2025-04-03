@@ -15,4 +15,4 @@ const getAccounts = async() => {
     return rows
 }
 
-module.exports = {getAccounts}
+module.exports = {pool}

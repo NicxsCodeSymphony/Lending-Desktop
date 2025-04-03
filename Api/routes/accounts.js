@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { getAccounts } = require('../query'); 
+const { pool } = require('../query'); 
 
-// Define the `/accounts` route
+const getAccounts = async () => {
+    const [rows] = await pool.query("SELECT * FROM accounts")
+    return rows
+}
+
 router.get('/', async (req, res) => {
     try {
         const users = await getAccounts();
@@ -23,7 +27,7 @@ router.post('/login', async (req, res) => {
             if(username == s.username){
                 
                 if(password == s.password){
-                    res.status(200).send({message: "Your are now successfully Logged in"})
+                    res.status(200).send({message: "Your are now successfully Logged in", token: 12345})
                 }else{
                     res.status(400).send({error: "Incorrent Password"})
                 }

@@ -14,13 +14,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Import Routes
 const accountRoutes = require('./routes/accounts');
+const customerRoutes = require('./routes/customers')
 
 // Routes
 app.get('/', (req, res) => {
     res.send("Hello from Vercel Server!");
 });
 
-app.use('/accounts', accountRoutes); // Use the accounts route
+app.use('/accounts', accountRoutes); 
+app.use('/customers', customerRoutes)
 
 // Start Server
 const PORT = process.env.PORT || 3000;
