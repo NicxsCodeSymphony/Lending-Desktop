@@ -741,277 +741,267 @@ const Customers: React.FC = () => {
     </div>
     
     {/* Modal */}
-    {isModalOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div 
-          ref={modalRef}
-          className="bg-white dark:bg-gray-900 rounded-lg w-full max-w-md mx-4 shadow-xl"
-        >
-          <div className="p-6">
-            {modalMode === "view" && currentCustomer && (
-              <>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                    Customer Details
-                  </h2>
-                  <button 
-                    onClick={closeModal}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">ID</p>
-                    <p className="text-gray-900 dark:text-gray-100">{currentCustomer.customer_id}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</p>
-                    <span 
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        currentCustomer.status === "Active" 
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400" 
-                          : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-                      }`}
-                    >
-                      {currentCustomer.status}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Full Name</p>
-                  <p className="text-gray-900 dark:text-gray-100">
-                    {currentCustomer.first_name} {currentCustomer.middle_name} {currentCustomer.last_name}
-                  </p>
-                </div>
-                
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Address</p>
-                  <p className="text-gray-900 dark:text-gray-100">{currentCustomer.address}</p>
-                </div>
-                
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Birthdate</p>
-                  <p className="text-gray-900 dark:text-gray-100">{formatDate(currentCustomer.birthdate)}</p>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Created</p>
-                    <p className="text-gray-900 dark:text-gray-100">{formatDate(currentCustomer.created_at)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Last Updated</p>
-                    <p className="text-gray-900 dark:text-gray-100">{formatDate(currentCustomer.updated_at)}</p>
-                  </div>
-                </div>
-                
-                <div className="mt-6 flex justify-end space-x-3">
-                  <button
-                    onClick={closeModal}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
-                  >
-                    Close
-                  </button>
-                  <button
-                    onClick={() => {
-                      closeModal();
-                      openModal("edit", currentCustomer);
-                    }}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                  >
-                    Edit
-                  </button>
-                </div>
-              </>
-            )}
-            
-            {(modalMode === "create" || modalMode === "edit") && (
-              <>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                    {modalMode === "create" ? "Add New Customer" : "Edit Customer"}
-                  </h2>
-                  <button 
-                    onClick={closeModal}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-                
-                <form onSubmit={handleFormSubmit}>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        First Name *
-                      </label>
-                      <input
-                        type="text"
-                        name="first_name"
-                        value={formData.first_name}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-                      />
-                    </div>
-                    
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Middle Name
-                      </label>
-                      <input
-                        type="text"
-                        name="middle_name"
-                        value={formData.middle_name}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-                      />
-                    </div>
-                    
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Last Name *
-                      </label>
-                      <input
-                        type="text"
-                        name="last_name"
-                        value={formData.last_name}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-                      />
-                    </div>
-                    
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Status
-                      </label>
-                      <select
-                        name="status"
-                        value={formData.status}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-                      >
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                      </select>
-                    </div>
-                    
-                    <div className="col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Address *
-                      </label>
-                      <textarea
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        required
-                        rows={2}
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-                      />
-                    </div>
-                    
-                    <div className="col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Birthdate *
-                      </label>
-                      <input
-                        type="text"
-                        name="birthdate"
-                        value={formData.birthdate}
-                        onChange={handleInputChange}
-                        placeholder="e.g. January 1, 2000"
-                        required
-                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 flex justify-end space-x-3">
-                    <button
-                      type="button"
-                      onClick={closeModal}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                    >
-                      {modalMode === "create" ? "Create" : "Update"}
-                    </button>
-                  </div>
-                </form>
-              </>
-            )}
-            
-            {modalMode === "delete" && currentCustomer && (
-              <>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                    Delete Customer
-                  </h2>
-                  <button 
-                    onClick={closeModal}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-                
-                <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-md mb-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <AlertCircle className="h-5 w-5 text-red-500" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
-                        Warning
-                      </h3>
-                      <p className="mt-2 text-sm text-red-700 dark:text-red-400">
-                        Are you sure you want to delete this customer? This action cannot be undone.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Customer ID</p>
-                  <p className="text-gray-900 dark:text-gray-100">{currentCustomer.customer_id}</p>
-                </div>
-                
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Name</p>
-                  <p className="text-gray-900 dark:text-gray-100">
-                    {currentCustomer.first_name} {currentCustomer.middle_name} {currentCustomer.last_name}
-                  </p>
-                </div>
-                
-                <div className="mt-6 flex justify-end space-x-3">
-                  <button
-                    onClick={closeModal}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleDeleteCustomer}
-                    className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </>
-            )}
+{isModalOpen && (
+  <div className="modal-overlay">
+    <div 
+      ref={modalRef}
+      className={`modal-container ${
+        modalMode === "create" ? "modal-create" : 
+        modalMode === "edit" ? "modal-edit" : 
+        modalMode === "delete" ? "modal-delete" : 
+        "modal-view"
+      }`}
+    >
+      {modalMode === "view" && currentCustomer && (
+        <>
+          <div className="modal-header">
+            <h2 className="modal-title">
+              Customer Details
+            </h2>
+            <button 
+              onClick={closeModal}
+              className="modal-close"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
-        </div>
-      </div>
-    )}
+          
+          <div className="modal-content">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <p className="detail-label">ID</p>
+                <p className="detail-value">{currentCustomer.customer_id}</p>
+              </div>
+              <div>
+                <p className="detail-label">Status</p>
+                <span 
+                  className={`badge ${
+                    currentCustomer.status === "Active" 
+                      ? "badge-success" 
+                      : "badge-danger"
+                  }`}
+                >
+                  {currentCustomer.status}
+                </span>
+              </div>
+            </div>
+            
+            <div className="mb-4">
+              <p className="detail-label">Full Name</p>
+              <p className="detail-value">
+                {currentCustomer.first_name} {currentCustomer.middle_name} {currentCustomer.last_name}
+              </p>
+            </div>
+            
+            <div className="mb-4">
+              <p className="detail-label">Address</p>
+              <p className="detail-value">{currentCustomer.address}</p>
+            </div>
+            
+            <div className="mb-4">
+              <p className="detail-label">Birthdate</p>
+              <p className="detail-value">{formatDate(currentCustomer.birthdate)}</p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="detail-label">Created</p>
+                <p className="detail-value">{formatDate(currentCustomer.created_at)}</p>
+              </div>
+              <div>
+                <p className="detail-label">Last Updated</p>
+                <p className="detail-value">{formatDate(currentCustomer.updated_at)}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="modal-footer">
+            <button
+              onClick={closeModal}
+              className="btn btn-secondary"
+            >
+              Close
+            </button>
+            <button
+              onClick={() => {
+                closeModal();
+                openModal("edit", currentCustomer);
+              }}
+              className="btn btn-primary"
+            >
+              Edit
+            </button>
+          </div>
+        </>
+      )}
+      
+      {(modalMode === "create" || modalMode === "edit") && (
+        <>
+          <div className="modal-header">
+            <h2 className="modal-title">
+              {modalMode === "create" ? "Add New Customer" : "Edit Customer"}
+            </h2>
+            <button 
+              onClick={closeModal}
+              className="modal-close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          
+          <form onSubmit={handleFormSubmit} className="modal-content">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2 sm:col-span-1 form-group">
+                <label className="form-label required-field">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  required
+                  className="form-input"
+                />
+              </div>
+              
+              <div className="col-span-2 sm:col-span-1 form-group">
+                <label className="form-label">
+                  Middle Name
+                </label>
+                <input
+                  type="text"
+                  name="middle_name"
+                  value={formData.middle_name}
+                  onChange={handleInputChange}
+                  className="form-input"
+                />
+              </div>
+              
+              <div className="col-span-2 sm:col-span-1 form-group">
+                <label className="form-label required-field">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  required
+                  className="form-input"
+                />
+              </div>
+              
+              <div className="col-span-2 form-group">
+                <label className="form-label required-field">
+                  Address
+                </label>
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  required
+                  rows={2}
+                  className="form-input"
+                />
+              </div>
+              
+              <div className="col-span-2 form-group">
+                <label className="form-label required-field">
+                  Birthdate
+                </label>
+                <input
+                  type="text"
+                  name="birthdate"
+                  value={formData.birthdate}
+                  onChange={handleInputChange}
+                  placeholder="e.g. January 1, 2000"
+                  required
+                  className="form-input"
+                />
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button
+                type="button"
+                onClick={closeModal}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+              >
+                {modalMode === "create" ? "Create" : "Update"}
+              </button>
+            </div>
+          </form>
+        </>
+      )}
+      
+      {modalMode === "delete" && currentCustomer && (
+        <>
+          <div className="modal-header">
+            <h2 className="modal-title">
+              Delete Customer
+            </h2>
+            <button 
+              onClick={closeModal}
+              className="modal-close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          
+          <div className="modal-content">
+            <div className="alert alert-danger">
+              <div className="alert-icon">
+                <AlertCircle className="h-5 w-5" />
+              </div>
+              <div className="alert-content">
+                <h3 className="alert-title">
+                  Warning
+                </h3>
+                <p className="alert-message">
+                  Are you sure you want to delete this customer? This action cannot be undone.
+                </p>
+              </div>
+            </div>
+            
+            <div className="mb-4">
+              <p className="detail-label">Customer ID</p>
+              <p className="detail-value">{currentCustomer.customer_id}</p>
+            </div>
+            
+            <div className="mb-4">
+              <p className="detail-label">Name</p>
+              <p className="detail-value">
+                {currentCustomer.first_name} {currentCustomer.middle_name} {currentCustomer.last_name}
+              </p>
+            </div>
+          </div>
+          
+          <div className="modal-footer">
+            <button
+              onClick={closeModal}
+              className="btn btn-secondary"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDeleteCustomer}
+              className="btn btn-danger"
+            >
+              Delete
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
     
   </div>
 );
