@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { getAccounts } = require('../query'); 
+const { pool } = require('../query'); 
 
-// Define the `/accounts` route
+const getAccounts = async () => {
+    const [rows] = await pool.query("SELECT * FROM accounts")
+    return rows
+}
+
 router.get('/', async (req, res) => {
     try {
         const users = await getAccounts();
