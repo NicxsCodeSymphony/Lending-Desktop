@@ -83,49 +83,11 @@ const Customers: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.get<Customer[]>(`${API_URL}/customers`);
-      console.log(response.data)
       setCustomers(response.data);
       setError(null);
     } catch (err) {
       console.error("Error fetching customers:", err);
       setError("Failed to fetch customers. Please try again later.");
-      
-      // Fallback to sample data for demo purposes
-      setCustomers([
-        {
-          "customer_id": 1,
-          "first_name": "Lawrenz",
-          "middle_name": "Capangpangan",
-          "last_name": "Carisusa",
-          "address": "Gairan, Bogo City, Cebu",
-          "birthdate": "November 02, 2002",
-          "status": "Active",
-          "created_at": "2025-04-03T05:45:54.000Z",
-          "updated_at": "2025-04-03T05:45:54.000Z"
-        },
-        {
-          "customer_id": 2,
-          "first_name": "Dhaniel",
-          "middle_name": "Gilapa",
-          "last_name": "Malinao",
-          "address": "Pelaez St. Bogo City, Cebu",
-          "birthdate": "February 26, 2002",
-          "status": "Active",
-          "created_at": "2025-04-03T05:58:15.000Z",
-          "updated_at": "2025-04-03T05:58:15.000Z"
-        },
-        {
-          "customer_id": 3,
-          "first_name": "Dhaniel",
-          "middle_name": "Gilapa",
-          "last_name": "Malinao",
-          "address": "Pelaez St. Bogo City, Cebu",
-          "birthdate": "February 26, 2002",
-          "status": "Active",
-          "created_at": "2025-04-03T05:58:43.000Z",
-          "updated_at": "2025-04-03T05:58:43.000Z"
-        }
-      ]);
     } finally {
       setLoading(false);
     }

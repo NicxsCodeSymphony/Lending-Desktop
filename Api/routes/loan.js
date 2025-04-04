@@ -31,13 +31,10 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);`, [customer_id, loan_start, months, loan_end
 
 }
 
-
-
-
 router.get('/', async(req, res) =>{ 
     try{
         const loan = await getLoans()
-        res.status(400).send(loan)
+        res.status(200).send(loan)
     }
     catch(err){
         res.status(500).send({error: err.message})
