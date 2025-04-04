@@ -13,7 +13,7 @@ import {
   User2
 } from "lucide-react";
 
-type PageType = "home" | "customer" | "settings" | "profile";
+type PageType = "home" | "customer" | "lending" | "profile";
 
 interface NavItem {
   id: PageType;
@@ -23,6 +23,7 @@ interface NavItem {
 
 import '../styles/Dashboard.css'
 import Customers from "./Dashboard/Customers";
+import Lending from "./Dashboard/Lending";
 
 const Dashboard: React.FC = () => {
   const [activePage, setActivePage] = useState<PageType>("home");
@@ -36,11 +37,9 @@ const Dashboard: React.FC = () => {
       window.location.href = "/";
     }
     
-    // Check user preference for dark mode
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedDarkMode);
     
-    // Apply dark mode class to body
     if (savedDarkMode) {
       document.body.classList.add("dark-mode");
     }
@@ -61,7 +60,7 @@ const Dashboard: React.FC = () => {
   const navItems: NavItem[] = [
     { id: "home", label: "Dashboard", icon: <Home size={20} /> },
     { id: "customer", label: "Customer", icon: <User2 size={20} /> },
-    { id: "settings", label: "Settings", icon: <Settings size={20} /> },
+    { id: "lending", label: "Lending", icon: <Settings size={20} /> },
     { id: "profile", label: "My Profile", icon: <User size={20} /> },
   ];
 
@@ -71,8 +70,8 @@ const Dashboard: React.FC = () => {
         return <HomePage />;
       case "customer":
         return <Customers title="Customer" />;
-      case "settings":
-        return <PlaceholderPage title="Settings" />;
+      case "lending":
+        return <Lending title="Lending" />;
       case "profile":
         return <PlaceholderPage title="Profile" />;
       default:
