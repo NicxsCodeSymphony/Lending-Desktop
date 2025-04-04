@@ -32,7 +32,7 @@ const Lending: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState({ message: "", type: "" });
   const [activeTab, setActiveTab] = useState('info');
 
-  const getReceiptStatusClass = (receipt) => {
+  const getReceiptStatusClass = (receipt: Receipt) => {
     const dueDate = new Date(receipt.schedule);
     const today = new Date();
     if (receipt.amount < receipt.to_pay && dueDate < today) {
