@@ -21,7 +21,6 @@ import {
 
 import '../../styles/Customer.css'
 
-// Customer interface
 interface Customer {
   customer_id: number;
   first_name: string;

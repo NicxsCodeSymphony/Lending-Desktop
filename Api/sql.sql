@@ -55,6 +55,7 @@ create table receipt(
     pay_id int primary key auto_increment,
     loan_id int not null,
     to_pay float not null,
+    schedule varchar(20) not null,
     amount float not null,
     transaction_time timestamp default current_timestamp,
     status varchar(10) not null default 'Not Paid',
