@@ -10,9 +10,4 @@ const pool = mysql.createPool({
     database: process.env.MYSQL_DATABASE
 }).promise()
 
-const getAccounts = async() => {
-    const [rows] = await pool.query("SELECT * FROM accounts");
-    return rows
-}
-
 module.exports = {pool}

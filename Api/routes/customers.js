@@ -7,13 +7,13 @@ const getCustomers = async() => {
     return rows
 }
 
-const insertCustomer = async(first_name, middle_name, last_name, address, birthdate) => {
-    const [result] = await pool.query("INSERT INTO customer(first_name, middle_name, last_name, address, birthdate) VALUES(?,?,?,?,?)", [first_name, middle_name, last_name, address, birthdate])
+const insertCustomer = async(first_name, middle_name, last_name, contact, address, birthdate) => {
+    const [result] = await pool.query("INSERT INTO customer(first_name, middle_name, last_name, contact, address, birthdate) VALUES(?,?,?,?,?,?)", [first_name, middle_name, last_name, contact, address, birthdate])
        return result.affectedRows > 0 ? "Customer has been added successfully" : "Error on adding customer"
 }
 
-const updateCustomer = async(customer_id, first_name, middle_name, last_name, address, birthdate) => {
-    const [result] =  await pool.query("UPDATE customer SET first_name = ?, middle_name = ?, last_name = ?, address = ?, birthdate = ? WHERE customer_id = ?", [first_name, middle_name, last_name, address, birthdate, customer_id])
+const updateCustomer = async(customer_id, first_name, middle_name, last_name, contact, address, birthdate) => {
+    const [result] =  await pool.query("UPDATE customer SET first_name = ?, middle_name = ?, last_name = ?, contact = ? address = ?, birthdate = ? WHERE customer_id = ?", [first_name, middle_name, last_name, contact, address, birthdate, customer_id])
     return result.affectedRows > 0 ? "Customer's information has been updated successfully" : "Error on updating customer's information"
 }
 
@@ -34,10 +34,10 @@ router.get('/', async(req, res) => {
 })
 
 router.post('/', async(req, res) => {
-    const {first_name, middle_name, last_name, address, birthdate} = req.body
+    const {first_name, middle_name, last_name, contact, address, birthdate} = req.body
 
     try{
-        const result = await insertCustomer(first_name, middle_name, last_name, address, birthdate)
+        const result = await insertCustomer(first_name, middle_name, last_name, contact, address, birthdate)
         res.send(result)
         
     }

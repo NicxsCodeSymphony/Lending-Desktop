@@ -1,19 +1,9 @@
-import { useEffect, useState } from "react";
-import { 
-  Home, 
-  BarChart2, 
-  Settings, 
-  User, 
-  Bell, 
-  Search, 
-  LogOut, 
-  Menu, 
-  X, 
-  ChevronRight,
-  User2
-} from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Home, Users, DollarSign, Bell, Menu, X } from 'lucide-react';
 
-type PageType = "home" | "customer" | "lending" | "profile";
+import Customer from './Dashboard/Customer';
+
+type PageType = "home" | "customer" | "lending";
 
 interface NavItem {
   id: PageType;
@@ -21,284 +11,194 @@ interface NavItem {
   icon: JSX.Element;
 }
 
-import '../styles/Dashboard.css'
-import Customers from "./Dashboard/Customers";
-import Lending from "./Dashboard/Lending";
-
 const Dashboard: React.FC = () => {
-  const [activePage, setActivePage] = useState<PageType>("home");
+  // Get initial active page from localStorage or default to "home"
+  const getInitialPage = (): PageType => {
+    if (typeof window !== 'undefined') {
+      const savedPage = localStorage.getItem('activePage');
+      if (savedPage === 'home' || savedPage === 'customer' || savedPage === 'lending') {
+        return savedPage;
+      }
+    }
+    return "home";
+  };
+
+  const [activePage, setActivePage] = useState<PageType>(getInitialPage());
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<number>(3);
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-
-  useEffect(() => {
-    const user = localStorage.getItem("authToken");
-    if (!user) {
-      window.location.href = "/";
-    }
-    
-    const savedDarkMode = localStorage.getItem("darkMode") === "true";
-    setDarkMode(savedDarkMode);
-    
-    if (savedDarkMode) {
-      document.body.classList.add("dark-mode");
-    }
-  }, []);
-
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem("darkMode", String(newMode));
-    
-    if (newMode) {
-      document.body.classList.add("dark-mode");
-    } else {
-      document.body.classList.remove("dark-mode");
-    }
-  };
 
   const navItems: NavItem[] = [
     { id: "home", label: "Dashboard", icon: <Home size={20} /> },
-    { id: "customer", label: "Customer", icon: <User2 size={20} /> },
-    { id: "lending", label: "Lending", icon: <Settings size={20} /> },
-    { id: "profile", label: "My Profile", icon: <User size={20} /> },
+    { id: "customer", label: "Customers", icon: <Users size={20} /> },
+    { id: "lending", label: "Lending", icon: <DollarSign size={20} /> }
   ];
 
-  const renderPage = () => {
-    switch (activePage) {
-      case "home":
-        return <HomePage />;
-      case "customer":
-        return <Customers title="Customer" />;
-      case "lending":
-        return <Lending title="Lending" />;
-      case "profile":
-        return <PlaceholderPage title="Profile" />;
-      default:
-        return <HomePage />;
+  // Save active page to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('activePage', activePage);
+  }, [activePage]);
+
+  const handleNavChange = (pageId: PageType) => {
+    setActivePage(pageId);
+    if (isMobileSidebarOpen) {
+      setIsMobileSidebarOpen(false);
     }
   };
 
-  const toggleMobileSidebar = () => {
-    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  // Render appropriate content based on active page
+  const renderPageContent = () => {
+    switch (activePage) {
+      case "customer":
+        return <Customer />;
+      case "home":
+        return (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-medium text-gray-800 mb-4">
+              Welcome to your Dashboard
+            </h3>
+            <p className="text-gray-600">
+              This is your main dashboard where you can view key metrics and reports.
+            </p>
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="bg-gray-50 p-4 rounded border border-gray-200">
+                  <h4 className="font-medium text-gray-700">Content Panel {item}</h4>
+                  <p className="text-sm text-gray-500 mt-2">
+                    This is a placeholder for the dashboard content.
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      case "lending":
+        return (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-medium text-gray-800 mb-4">
+              Lending Overview
+            </h3>
+            <p className="text-gray-600">
+              Monitor and manage all lending activities and transactions.
+            </p>
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="bg-gray-50 p-4 rounded border border-gray-200">
+                  <h4 className="font-medium text-gray-700">Content Panel {item}</h4>
+                  <p className="text-sm text-gray-500 mt-2">
+                    This is a placeholder for the lending page content.
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className={`dashboard-container ${darkMode ? 'dark-mode' : ''}`}>
+    <div className="flex h-screen bg-gray-50">
+      {/* Mobile sidebar backdrop */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 z-20 md:hidden" 
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className={`sidebar ${isMobileSidebarOpen ? "open" : ""}`}>
-        <div className="sidebar-header">
-          <div className="logo">
-            <div className="logo-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                <line x1="9" y1="9" x2="9.01" y2="9" />
-                <line x1="15" y1="9" x2="15.01" y2="9" />
-              </svg>
-            </div>
-            <h2>Pulse</h2>
-          </div>
-          <button className="close-sidebar" onClick={toggleMobileSidebar}>
-            <X size={20} />
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-30
+        w-64 transform transition-transform duration-300 ease-in-out
+        bg-white shadow-lg md:shadow-md flex flex-col
+        ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        {/* Sidebar Header */}
+        <div className="h-16 flex items-center justify-between px-6 border-b">
+          <h1 className="text-xl font-bold text-gray-800">Company Name</h1>
+          <button 
+            className="md:hidden" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+          >
+            <X size={24} className="text-gray-600 hover:text-gray-900" />
           </button>
         </div>
-        
-        <div className="sidebar-user">
-          <div className="avatar">JD</div>
-          <div className="user-info">
-            <h4>John Doe</h4>
-            <p>Admin</p>
-          </div>
-        </div>
-        
-        <nav className="sidebar-nav">
+
+        {/* Navigation Items */}
+        <nav className="flex-1 pt-4 pb-4 overflow-y-auto">
           <ul>
             {navItems.map((item) => (
-              <li 
-                key={item.id}
-                className={activePage === item.id ? "active" : ""}
-                onClick={() => {
-                  setActivePage(item.id);
-                  if (window.innerWidth < 768) setIsMobileSidebarOpen(false);
-                }}
-              >
-                <div className="nav-item">
-                  <span className="icon">{item.icon}</span>
-                  <span className="label">{item.label}</span>
-                </div>
-                <ChevronRight size={16} className="chevron" />
+              <li key={item.id} className="px-2 py-1">
+                <button
+                  onClick={() => handleNavChange(item.id)}
+                  className={`
+                    flex items-center w-full px-4 py-3 rounded-md 
+                    transition-colors duration-200 text-left
+                    ${activePage === item.id 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'}
+                  `}
+                >
+                  <span className="mr-3">{item.icon}</span>
+                  <span className="font-medium">{item.label}</span>
+                  {item.id === "customer" && notifications > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {notifications}
+                    </span>
+                  )}
+                </button>
               </li>
             ))}
           </ul>
         </nav>
 
-        <div className="sidebar-footer">
-          <div className="theme-toggle">
-            <label className="switch">
-              <input 
-                type="checkbox" 
-                checked={darkMode} 
-                onChange={toggleDarkMode}
-              />
-              <span className="slider round"></span>
-            </label>
-            <span>Dark Mode</span>
+        {/* User Profile */}
+        <div className="border-t px-6 py-4">
+          <div className="flex items-center">
+            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+              JS
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-800">John Smith</p>
+              <p className="text-xs text-gray-500">Admin</p>
+            </div>
           </div>
-          <button 
-            className="logout-button"
-            onClick={() => {
-              localStorage.removeItem("authToken");
-              window.location.href = "/";
-            }}
-          >
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="main-area">
-        {/* Top Navigation */}
-        <header className="top-nav">
-          <div className="mobile-toggle">
-            <button onClick={toggleMobileSidebar}>
-              <Menu size={24} />
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Header */}
+        <header className="h-16 bg-white shadow-sm flex items-center justify-between px-6">
+          <div className="flex items-center">
+            <button 
+              className="md:hidden mr-4" 
+              onClick={() => setIsMobileSidebarOpen(true)}
+            >
+              <Menu size={24} className="text-gray-600 hover:text-gray-900" />
             </button>
-            <h2>{navItems.find(item => item.id === activePage)?.label}</h2>
+            <h2 className="text-lg font-medium text-gray-800">
+              {navItems.find(item => item.id === activePage)?.label || 'Dashboard'}
+            </h2>
           </div>
-          
-          <div className="search-container">
-            <Search size={18} />
-            <input type="text" placeholder="Search..." />
-          </div>
-          
-          <div className="top-nav-actions">
-            <button className="notification-btn">
+          <div className="flex items-center">
+            <button className="relative p-2 text-gray-600 hover:text-gray-900">
               <Bell size={20} />
-              {notifications > 0 && <span className="badge">{notifications}</span>}
+              {notifications > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                  {notifications}
+                </span>
+              )}
             </button>
-            <div className="user-menu">
-              <div className="avatar mobile-hidden">JD</div>
-            </div>
           </div>
         </header>
 
-        {/* Page Content */}
-        <div className="page-content">
-          {renderPage()}
-        </div>
-      </main>
-
-      {/* Overlay for mobile */}
-      {isMobileSidebarOpen && (
-        <div 
-          className="sidebar-overlay" 
-          onClick={() => setIsMobileSidebarOpen(false)}
-        ></div>
-      )}
-    </div>
-  );
-};
-
-// Placeholder Home page with content
-const HomePage: React.FC = () => {
-  const stats = [
-    { label: "Total Users", value: "2,845", trend: "+12.5%", up: true },
-    { label: "Revenue", value: "$12,875", trend: "+8.3%", up: true },
-    { label: "Conversion", value: "3.7%", trend: "-2.4%", up: false },
-    { label: "Avg. Session", value: "4m 32s", trend: "+18.2%", up: true },
-  ];
-
-  const recentActivities = [
-    { user: "Sofia Lee", action: "created a new campaign", time: "5 min ago" },
-    { user: "Alex Johnson", action: "updated analytics report", time: "2 hours ago" },
-    { user: "Maria Garcia", action: "completed onboarding", time: "Yesterday" },
-    { user: "Robert Chen", action: "posted a comment", time: "2 days ago" },
-  ];
-
-  return (
-    <div className="home-page">
-      <div className="welcome-card">
-        <div className="welcome-text">
-          <h1>Welcome back, John!</h1>
-          <p>Here's what's happening with your projects today.</p>
-        </div>
-        <div className="welcome-actions">
-          <button className="btn primary">View Reports</button>
-          <button className="btn secondary">New Project</button>
-        </div>
+        {/* Content Area */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
+          {renderPageContent()}
+        </main>
       </div>
-
-      <div className="stat-cards">
-        {stats.map((stat, index) => (
-          <div className="stat-card" key={index}>
-            <div className="stat-header">
-              <h3>{stat.label}</h3>
-              <div className={`trend ${stat.up ? 'up' : 'down'}`}>
-                {stat.trend}
-              </div>
-            </div>
-            <div className="stat-value">{stat.value}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="dashboard-grid">
-        <div className="chart-card">
-          <div className="card-header">
-            <h3>Performance Overview</h3>
-            <div className="card-actions">
-              <select>
-                <option>This Week</option>
-                <option>This Month</option>
-                <option>This Year</option>
-              </select>
-            </div>
-          </div>
-          <div className="chart-placeholder">
-            {/* Placeholder for chart - would integrate with actual chart library */}
-            <div className="mock-chart">
-              <div className="mock-bar" style={{ height: '60%' }}></div>
-              <div className="mock-bar" style={{ height: '80%' }}></div>
-              <div className="mock-bar" style={{ height: '40%' }}></div>
-              <div className="mock-bar" style={{ height: '70%' }}></div>
-              <div className="mock-bar" style={{ height: '90%' }}></div>
-              <div className="mock-bar" style={{ height: '50%' }}></div>
-              <div className="mock-bar" style={{ height: '75%' }}></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="activity-card">
-          <div className="card-header">
-            <h3>Recent Activity</h3>
-            <button className="view-all">View All</button>
-          </div>
-          <ul className="activity-list">
-            {recentActivities.map((activity, index) => (
-              <li key={index}>
-                <div className="activity-avatar">{activity.user.charAt(0)}</div>
-                <div className="activity-details">
-                  <p><strong>{activity.user}</strong> {activity.action}</p>
-                  <span className="activity-time">{activity.time}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Placeholder for other pages
-const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => {
-  return (
-    <div className="placeholder-page">
-      <h1>{title} Page</h1>
-      <p>This is a placeholder for the {title} page content.</p>
     </div>
   );
 };
