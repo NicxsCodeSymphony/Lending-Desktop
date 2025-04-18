@@ -66,26 +66,29 @@ const AddLoanModal: React.FC<AddLoanModalProps> = ({ isOpen, onClose, customerId
       const serviceFee = principal * 0.05;
       
       // Simple interest calculation (Principal × Rate × Time)
-      const interestAmount = principal * interestRate * (months / 12);
+      // const interestAmount = principal * interestRate * (months / 12);
+      const interestAmount = principal * interestRate
       
       // Gross receivable
-      const grossReceivable = principal + interestAmount;
-      
+      const grossReceivable = (principal + interestAmount);
+      const adjustment = parseFloat(String(formData.adjustment)) || 0;
+      const withAdjustments = grossReceivable + adjustment;
+
       // Monthly payment
-      const monthlyPayment = grossReceivable / months;
+      const monthlyPayment = withAdjustments / months;
       
       // Update form data
       setFormData(prev => ({
         ...prev,
         loan_end: formatDate(endDate),
         service: serviceFee,
-        gross_receivable: grossReceivable,
+        gross_receivable: withAdjustments,
         payday_payment: monthlyPayment,
-        balance: grossReceivable,
-        overall_balance: grossReceivable
+        balance: withAdjustments,
+        overall_balance: withAdjustments
       }));
     }
-  }, [formData.loan_start, formData.months, formData.loan_amount, formData.interest]);
+  }, [formData.loan_start, formData.adjustment, formData.months, formData.loan_amount, formData.interest]);
 
   function formatDate(date: Date): string {
     const year = date.getFullYear();
@@ -131,7 +134,7 @@ const AddLoanModal: React.FC<AddLoanModalProps> = ({ isOpen, onClose, customerId
       
       const res = await axios.post('http://localhost:3002/loan', payload);
 
-      if (res.status === 200) {
+      if (res.status === 201) {
         resetForm();
         onClose();
         window.location.reload();
@@ -230,6 +233,26 @@ const AddLoanModal: React.FC<AddLoanModalProps> = ({ isOpen, onClose, customerId
                       type="number"
                       name="interest"
                       value={formData.interest}
+                      onChange={handleChange}
+                      className="w-full pl-3 pr-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      required
+                      min="0"
+                      step="0.01"
+                    />
+                    <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">%</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                    <DollarSign className="w-4 h-4 mr-1 text-green-600" />
+                    Adjustments
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="adjustment"
+                      value={formData.adjustment}
                       onChange={handleChange}
                       className="w-full pl-3 pr-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                       required

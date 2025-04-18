@@ -35,6 +35,7 @@ create table loan(
     balance float not null,
     adjustment float not null,
     overall_balance float not null,
+    status varchar(10) default "Active",
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
     constraint fk_customer foreign key (customer_id) references customer(customer_id) on delete cascade
@@ -61,5 +62,17 @@ create table receipt(
     status varchar(10) not null default 'Not Paid',
     updated_at timestamp default current_timestamp on update current_timestamp,
     constraint fk_loan foreign key(loan_id) references loan(loan_id) on delete cascade
+);
+
+CREATE TABLE paymentHistory (
+    history_id INT PRIMARY KEY AUTO_INCREMENT,
+    loan_id INT NOT NULL,
+    pay_id INT NOT NULL,
+    amount FLOAT NOT NULL,
+    payment_method VARCHAR(10) NOT NULL,
+    notes VARCHAR(100) NOT NULL,
+    transaction_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_payment_loan FOREIGN KEY (loan_id) REFERENCES loan(loan_id) ON DELETE CASCADE,
+    CONSTRAINT fk_payment_receipt FOREIGN KEY (pay_id) REFERENCES receipt(pay_id) ON DELETE CASCADE
 );
 
