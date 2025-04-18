@@ -41,6 +41,13 @@ const insertLoan = async (customer_id, loan_start, months, loan_end, transaction
     return result.affectedRows > 0 ? "Loan has been added successfully" : "Error on adding loan";
 };
 
+const payLoan = async (pay_id, amount, transaction_time) => {
+    const [result] = await pool.query(`
+        UPDATE receipt set amount = ?, transaction_time = ? WHERE pay_id = ?
+        `, [amount, transaction_time, pay_id])
+        return result.affectedRows > 0 ? "Payment successfull" : "Error on paying the loan"
+}
+
 
 
 const deleteLoan = async(loanId) => {
@@ -87,6 +94,21 @@ router.post('/', async(req, res) => {
         const result = await insertLoan(customer_id, loan_start, months, loan_end, transaction_date, loan_amount, interest, gross_receivable, payday_payment, service, balance, adjustment, overall_balance)
         res.status(201).send(result)
 
+    }
+    catch(err){
+        res.status(500).send({error: err.message})
+    }
+})
+
+// PAY LOAN
+
+router.put('/payLoan/:id', async (req, res) => {
+    const {id} = req.params
+    const {amount, transaction_time} =  req.body
+
+    try{
+        const result = await payLoan(id,amount, transaction_time)
+        res.status(200).send(result)
     }
     catch(err){
         res.status(500).send({error: err.message})
