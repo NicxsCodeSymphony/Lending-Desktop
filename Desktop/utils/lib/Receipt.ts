@@ -4,7 +4,7 @@ export interface Receipts{
     to_pay: number;
     schedule: string;
     amount: number;
-    transaction_date: string;
+    transaction_time: string;
     status: string;
     updated_at: string;
 }

@@ -100,7 +100,7 @@ const LendingPage: React.FC = () => {
 
   const calculateProgress = (loan: Loan) => {
     const totalAmount = loan.gross_receivable;
-    const paidAmount = totalAmount - loan.overall_balance;
+    const paidAmount = totalAmount - loan.balance;
     return Math.min(100, Math.max(0, (paidAmount / totalAmount) * 100));
   };
 
@@ -248,6 +248,20 @@ const LendingPage: React.FC = () => {
                         Amount
                         <ArrowUpDown className="h-4 w-4 ml-1" />
                       </div>
+
+                     
+                    </th>
+                    <th 
+                      scope="col" 
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort('balance')}
+                    >
+                      <div className="flex items-center">
+                        Balance
+                        <ArrowUpDown className="h-4 w-4 ml-1" />
+                      </div>
+
+                     
                     </th>
                     <th 
                       scope="col" 
@@ -290,10 +304,13 @@ const LendingPage: React.FC = () => {
                         #{loan.loan_id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        Customer #{loan.customer_id}
+                       {loan.first_name + " " + loan.last_name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                        {formatCurrency(loan.loan_amount)}
+                        {formatCurrency(loan.overall_balance)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                        {formatCurrency(loan.balance)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(loan.loan_start)}
@@ -309,7 +326,7 @@ const LendingPage: React.FC = () => {
                           ></div>
                         </div>
                         <div className="text-xs text-gray-500 mt-1">
-                          {formatCurrency(loan.gross_receivable - loan.overall_balance)} of {formatCurrency(loan.gross_receivable)}
+                          {formatCurrency(loan.gross_receivable - loan.balance)} of {formatCurrency(loan.gross_receivable)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

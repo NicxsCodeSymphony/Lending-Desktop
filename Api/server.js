@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 const accountRoutes = require('./routes/accounts');
 const customerRoutes = require('./routes/customers')
 const loanRoutes = require('./routes/loan')
+const historyRoutes = require('./routes/history')
 
 // Routes
 app.get('/', (req, res) => {
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 app.use('/accounts', accountRoutes); 
 app.use('/customers', customerRoutes)
 app.use('/loan', loanRoutes)
+app.use('/history', historyRoutes)
 
 // Start Server
 const PORT = process.env.PORT || 3000;
