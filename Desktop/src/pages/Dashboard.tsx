@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Home, Users, DollarSign, Bell, Menu, X } from 'lucide-react';
 
 import Customer from './Dashboard/Customer';
+import LendingPage from './Dashboard/Lending';
 
 type PageType = "home" | "customer" | "lending";
 
@@ -12,7 +13,6 @@ interface NavItem {
 }
 
 const Dashboard: React.FC = () => {
-  // Get initial active page from localStorage or default to "home"
   const getInitialPage = (): PageType => {
     if (typeof window !== 'undefined') {
       const savedPage = localStorage.getItem('activePage');
@@ -73,24 +73,9 @@ const Dashboard: React.FC = () => {
         );
       case "lending":
         return (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-medium text-gray-800 mb-4">
-              Lending Overview
-            </h3>
-            <p className="text-gray-600">
-              Monitor and manage all lending activities and transactions.
-            </p>
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[1, 2, 3].map((item) => (
-                <div key={item} className="bg-gray-50 p-4 rounded border border-gray-200">
-                  <h4 className="font-medium text-gray-700">Content Panel {item}</h4>
-                  <p className="text-sm text-gray-500 mt-2">
-                    This is a placeholder for the lending page content.
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <>
+          <LendingPage />
+          </>
         );
       default:
         return null;
