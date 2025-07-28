@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { BarChart3, TrendingUp, Users, DollarSign, AlertCircle, RefreshCw } from 'lucide-react'
 import MonthlyTrendsChart from '../../components/charts/MonthlyTrendsChart'
 import { getDashboardData, getSystemStatus } from '../../utils/DataType/DashboardServer'

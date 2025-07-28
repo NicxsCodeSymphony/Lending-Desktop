@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import {useState, useEffect } from 'react'
 import { DollarSign, Plus, Search, TrendingUp, AlertTriangle, CheckCircle, Clock, XCircle, Edit, Trash2, Loader2, AlertCircle, ChevronLeft, ChevronRight, Wallet, AlertOctagon, FileText, Download } from 'lucide-react'
 import { getLoans, deleteLoan, getLoanStats, recalculateAllLoanBalances } from '../../utils/DataType/LoanServer'
 import { getCustomers } from '../../utils/DataType/CustomerServer'
